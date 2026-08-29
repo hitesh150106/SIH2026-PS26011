@@ -1,0 +1,22 @@
+{
+  "clean": false,
+  "summary": {
+    "parcels_checked": 243,
+    "errors": 1,
+    "warnings": 0,
+    "info": 0
+  },
+  "findings": [
+    {
+      "rule": "UNIQUE_ULPIN",
+      "severity": "error",
+      "message": "Duplicate ULPIN detected: DL07TTNF9JN9P4-A-A00-0001-V",
+      "subjects": [
+        "DL07TTNF9JN9P4-A-A00-0001-V",
+        "DL07TTNF9JN9P4-A-A00-0001-V"
+      ],
+      "metric": null,
+      "unit": null
+    }
+  ]
+}

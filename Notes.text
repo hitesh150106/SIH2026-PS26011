@@ -1,0 +1,30 @@
+Rules :
+1.  UNIQUE ULPIN
+2.  GEOMETRY VALIDATION
+3.  ELEVATION VALIDATION
+4.  AREA VALIDATION
+5.  DIMENSION / VOLUME VALIDATION
+6.  PARENT EXISTS VALIDATION
+7.  3D VOLUME OVERLAP VALIDATION
+8.  REQUIRED PARCEL FIELDS VALIDATION
+9.  VERTICAL VALIDATION
+10. WITHIN PARENT
+11. LEVEL SEQUENCE
+
+
+
+TEST STATUS :
+1.  UNIQUE ULPIN                         -     Done
+2.  GEOMETRY VALIDATION                  -     Done
+3.  ELEVATION VALIDATION                 -     Pending
+4.  AREA VALIDATION                      -     Pending
+5.  DIMENSION / VOLUME VALIDATION        -     Pending
+6.  PARENT EXISTS VALIDATION             -     Done
+7.  3D VOLUME OVERLAP VALIDATION         -     Pending
+8.  REQUIRED PARCEL FIELDS VALIDATION    -     Pending
+9.  VERTICAL VALIDATION                  -     Pending
+10. WITHIN PARENT                        -     Pending
+11. LEVEL SEQUENCE                       -     Pending
+
+
+

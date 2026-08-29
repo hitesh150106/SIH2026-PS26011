@@ -1,0 +1,344 @@
+{
+  "base_ulpin": "DL07TTNF9JP3FD",
+  "provisional_base": true,
+  "footprint": {
+    "ring": [
+      [
+        14.745812106450156,
+        3.2761150773160685
+      ],
+      [
+        14.75000265537139,
+        -0.0019173521782183227
+      ],
+      [
+        17.502234902170347,
+        0.0016010278625136973
+      ],
+      [
+        17.497477177573455,
+        3.723303318507682
+      ],
+      [
+        36.264384953340596,
+        3.747294431111393
+      ],
+      [
+        36.23559156426528,
+        26.270754941429995
+      ],
+      [
+        3.735645085476331,
+        26.22920787971352
+      ],
+      [
+        3.765005650227308,
+        3.262077508244036
+      ]
+    ],
+    "vertices": 8,
+    "raw_vertices": 20,
+    "cell_size_m": 0.5,
+    "orientation_deg": 0.07,
+    "area_m2": 747.13,
+    "occupied_cells": 3109,
+    "regularised": true
+  },
+  "floors": {
+    "ground_z": -0.043,
+    "eave_z": 48.049,
+    "building_height_m": 48.093,
+    "storey_pitch_m": 3.198,
+    "storeys": 15,
+    "confidence": 0.9846,
+    "reliable": true,
+    "method": "facade-autocorrelation",
+    "floors": [
+      {
+        "level": 0,
+        "bottom_z": 0.035,
+        "top_z": 3.233
+      },
+      {
+        "level": 1,
+        "bottom_z": 3.233,
+        "top_z": 6.432
+      },
+      {
+        "level": 2,
+        "bottom_z": 6.432,
+        "top_z": 9.63
+      },
+      {
+        "level": 3,
+        "bottom_z": 9.63,
+        "top_z": 12.829
+      },
+      {
+        "level": 4,
+        "bottom_z": 12.829,
+        "top_z": 16.027
+      },
+      {
+        "level": 5,
+        "bottom_z": 16.027,
+        "top_z": 19.225
+      },
+      {
+        "level": 6,
+        "bottom_z": 19.225,
+        "top_z": 22.424
+      },
+      {
+        "level": 7,
+        "bottom_z": 22.424,
+        "top_z": 25.622
+      },
+      {
+        "level": 8,
+        "bottom_z": 25.622,
+        "top_z": 28.821
+      },
+      {
+        "level": 9,
+        "bottom_z": 28.821,
+        "top_z": 32.019
+      },
+      {
+        "level": 10,
+        "bottom_z": 32.019,
+        "top_z": 35.217
+      },
+      {
+        "level": 11,
+        "bottom_z": 35.217,
+        "top_z": 38.416
+      },
+      {
+        "level": 12,
+        "bottom_z": 38.416,
+        "top_z": 41.614
+      },
+      {
+        "level": 13,
+        "bottom_z": 41.614,
+        "top_z": 44.813
+      },
+      {
+        "level": 14,
+        "bottom_z": 44.813,
+        "top_z": 48.011
+      }
+    ]
+  },
+  "units_per_floor": 7,
+  "parcels_generated": 106,
+  "plan_units": [
+    {
+      "ring": [
+        [
+          35.9,
+          11.45
+        ],
+        [
+          35.9,
+          18.55
+        ],
+        [
+          21.65,
+          18.55
+        ],
+        [
+          21.65,
+          11.45
+        ]
+      ],
+      "area_m2": 101.18,
+      "vertices": 4
+    },
+    {
+      "ring": [
+        [
+          35.9,
+          4.1
+        ],
+        [
+          35.9,
+          11.2
+        ],
+        [
+          21.65,
+          11.2
+        ],
+        [
+          21.65,
+          4.1
+        ]
+      ],
+      "area_m2": 101.18,
+      "vertices": 4
+    },
+    {
+      "ring": [
+        [
+          18.4,
+          18.55
+        ],
+        [
+          4.15,
+          18.55
+        ],
+        [
+          4.15,
+          11.45
+        ],
+        [
+          18.4,
+          11.45
+        ]
+      ],
+      "area_m2": 101.17,
+      "vertices": 4
+    },
+    {
+      "ring": [
+        [
+          18.4,
+          11.2
+        ],
+        [
+          4.15,
+          11.2
+        ],
+        [
+          4.15,
+          4.1
+        ],
+        [
+          18.4,
+          4.1
+        ]
+      ],
+      "area_m2": 101.17,
+      "vertices": 4
+    },
+    {
+      "ring": [
+        [
+          18.4,
+          25.85
+        ],
+        [
+          4.15,
+          25.85
+        ],
+        [
+          4.15,
+          18.8
+        ],
+        [
+          18.4,
+          18.8
+        ]
+      ],
+      "area_m2": 100.46,
+      "vertices": 4
+    },
+    {
+      "ring": [
+        [
+          35.9,
+          18.8
+        ],
+        [
+          35.9,
+          25.85
+        ],
+        [
+          21.65,
+          25.85
+        ],
+        [
+          21.65,
+          18.8
+        ]
+      ],
+      "area_m2": 100.46,
+      "vertices": 4
+    },
+    {
+      "ring": [
+        [
+          18.65,
+          25.85
+        ],
+        [
+          18.65,
+          4.1
+        ],
+        [
+          21.4,
+          4.1
+        ],
+        [
+          21.4,
+          25.85
+        ]
+      ],
+      "area_m2": 59.81,
+      "vertices": 4
+    }
+  ],
+  "validation": {
+    "clean": true,
+    "parcels_checked": 106,
+    "pairs_compared": 5565,
+    "pairs_possible": 5565,
+    "comparison_saving": 0.0,
+    "counts": {
+      "error": 0,
+      "warning": 0,
+      "info": 1
+    },
+    "by_rule": {
+      "DECLARED_ACCURACY": 1
+    },
+    "conflicting_ulpins": [],
+    "rules_run": [
+      "UNIQUE_ULPIN",
+      "WATERTIGHT_GEOMETRY",
+      "ELEVATION_MATCHES_LEVEL",
+      "LEVEL_ELEVATION_ORDER",
+      "NO_VOLUME_OVERLAP",
+      "PHYSICAL_CLASH",
+      "WITHIN_PARENT",
+      "PARENT_EXISTS",
+      "LEVEL_SEQUENCE",
+      "UNACCOUNTED_VERTICAL_SPACE",
+      "PLAUSIBLE_DIMENSIONS",
+      "DECLARED_ACCURACY"
+    ],
+    "findings": [
+      {
+        "rule": "DECLARED_ACCURACY",
+        "rule_description": "Every parcel must declare a credible survey accuracy",
+        "severity": "info",
+        "message": "DL07TTNF9JP3FD-G-A00-0000-T declares 0.50 m accuracy from a lidar source, which normally achieves about 0.05 m. Worth re-surveying.",
+        "subjects": [
+          "DL07TTNF9JP3FD-G-A00-0000-T"
+        ],
+        "metric": 0.5,
+        "unit": "m"
+      }
+    ]
+  },
+  "accuracy": {
+    "footprint_iou": 0.9423,
+    "footprint_area_error": 0.0613,
+    "storeys_true": 15,
+    "storey_pitch_true_m": 3.2,
+    "storey_pitch_error_m": -0.0016,
+    "units_true": 7,
+    "mean_unit_iou": 0.9431
+  }
+}
