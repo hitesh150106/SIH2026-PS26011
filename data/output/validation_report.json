@@ -1,21 +1,58 @@
 {
-  "clean": false,
+  "clean": true,
   "summary": {
     "parcels_checked": 243,
-    "errors": 1,
-    "warnings": 0,
+    "errors": 0,
+    "warnings": 6,
     "info": 0
   },
   "findings": [
     {
-      "rule": "UNIQUE_ULPIN",
-      "severity": "error",
-      "message": "Duplicate ULPIN detected: DL07TTNF9JN9P4-A-A00-0001-V",
-      "subjects": [
-        "DL07TTNF9JN9P4-A-A00-0001-V",
-        "DL07TTNF9JN9P4-A-A00-0001-V"
-      ],
-      "metric": null,
+      "rule": "LEVEL_SEQUENCE",
+      "severity": "warning",
+      "message": "Missing level in sequence: -8",
+      "subjects": [],
+      "metric": -8,
+      "unit": null
+    },
+    {
+      "rule": "LEVEL_SEQUENCE",
+      "severity": "warning",
+      "message": "Missing level in sequence: -7",
+      "subjects": [],
+      "metric": -7,
+      "unit": null
+    },
+    {
+      "rule": "LEVEL_SEQUENCE",
+      "severity": "warning",
+      "message": "Missing level in sequence: -6",
+      "subjects": [],
+      "metric": -6,
+      "unit": null
+    },
+    {
+      "rule": "LEVEL_SEQUENCE",
+      "severity": "warning",
+      "message": "Missing level in sequence: -5",
+      "subjects": [],
+      "metric": -5,
+      "unit": null
+    },
+    {
+      "rule": "LEVEL_SEQUENCE",
+      "severity": "warning",
+      "message": "Missing level in sequence: -4",
+      "subjects": [],
+      "metric": -4,
+      "unit": null
+    },
+    {
+      "rule": "LEVEL_SEQUENCE",
+      "severity": "warning",
+      "message": "Missing level in sequence: -3",
+      "subjects": [],
+      "metric": -3,
       "unit": null
     }
   ]

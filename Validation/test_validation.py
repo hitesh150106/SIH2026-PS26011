@@ -1,7 +1,29 @@
 import json
 
-from validation import load_dataset, validate_dataset , check_geometry , check_vertical_extent , check_parent_exists , check_elevation , check_area , check_volume , check_no_volume_overlap , check_required_fields , check_vertical_extent , check_within_parent , check_level_sequence
+from Validation.validation import (
+    load_dataset,
+    validate_dataset,
+)
 
+from Validation.rules import (
+    check_geometry,
+    check_vertical_extent,
+    check_parent_exists,
+    check_elevation,
+    check_area,
+    check_volume,
+    check_no_volume_overlap,
+    check_required_fields,
+    check_within_parent,
+    check_level_sequence,
+    check_coordinate_structure,
+    check_space_type,
+    check_level_z_consistency,
+    check_parent_vertical_containment,
+    check_footprint_structure,
+    check_duplicate_geometry,
+    check_level_vertical_order
+)
 
 def test_clean_dwarka():
 
@@ -232,14 +254,8 @@ def test_invalid_vertical_structure():
         {
             "ulpin_3d": "FLOOR-0",
             "level": 0,
-            "bottom_z": 0,
-            "top_z": 3
-        },
-        {
-            "ulpin_3d": "FLOOR-1",
-            "level": 1,
-            "bottom_z": 5,
-            "top_z": 8
+            "bottom_z": 10,
+            "top_z": 5
         }
     ]
 
@@ -300,4 +316,320 @@ def test_invalid_level_sequence():
     findings = check_level_sequence(parcels)
 
     assert len(findings) > 0
+
+
+
+def test_invalid_coordinate_structure():
+
+    parcels = [
+        {
+            "ulpin_3d": "BAD-COORD-001",
+            "footprint": [
+                [0, 0],
+                [10],
+                [10, 10],
+                [0, 10]
+            ]
+        }
+    ]
+
+    findings = check_coordinate_structure(parcels)
+
+    assert len(findings) > 0
+    assert findings[0]["rule"] == "COORDINATE_STRUCTURE"
+
+def test_valid_coordinate_structure():
+
+    parcels = [
+        {
+            "ulpin_3d": "GOOD-COORD-001",
+            "footprint": [
+                [0, 0],
+                [10, 0],
+                [10, 10],
+                [0, 10]
+            ]
+        }
+    ]
+
+    findings = check_coordinate_structure(parcels)
+
+    assert findings == []
+
+
+# 13
+def test_invalid_space_type():
+
+    parcels = [
+        {
+            "ulpin_3d": "TEST-001",
+            "space_type": "X",
+            "footprint": [
+                [0, 0],
+                [10, 0],
+                [10, 10],
+                [0, 10],
+                [0, 0]
+            ],
+            "bottom_z": 0,
+            "top_z": 3
+        }
+    ]
+
+    findings = check_space_type(parcels)
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "SPACE_TYPE_VALIDATION"
+    assert findings[0]["severity"] == "error"
+
+def test_valid_space_type():
+
+    parcels = [
+        {
+            "ulpin_3d": "TEST-002",
+            "space_type": "A"
+        }
+    ]
+
+    findings = check_space_type(parcels)
+
+    assert len(findings) == 0
+
+
+#14
+def test_level_z_consistent():
+
+    parcels = [
+        {
+            "ulpin_3d": "TEST-003",
+            "level": 2,
+            "bottom_z": 6.4
+        }
+    ]
+
+    findings = check_level_z_consistency(
+        parcels,
+        floor_height=3.2,
+        tolerance=1.5
+    )
+
+    assert len(findings) == 0
+
+def test_level_z_inconsistent():
+
+    parcels = [
+        {
+            "ulpin_3d": "TEST-004",
+            "level": 2,
+            "bottom_z": 15.0
+        }
+    ]
+
+    findings = check_level_z_consistency(
+        parcels,
+        floor_height=3.2,
+        tolerance=1.5
+    )
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "LEVEL_Z_CONSISTENCY"
+
+
+
+#15
+def test_parent_vertical_valid():
+
+    parcels = [
+        {
+            "ulpin_3d": "PARENT",
+            "bottom_z": 0,
+            "top_z": 10
+        },
+        {
+            "ulpin_3d": "CHILD",
+            "parent": "PARENT",
+            "bottom_z": 2,
+            "top_z": 5
+        }
+    ]
+
+    findings = check_parent_vertical_containment(parcels)
+
+    assert len(findings) == 0
+
+def test_parent_vertical_invalid():
+
+    parcels = [
+        {
+            "ulpin_3d": "PARENT",
+            "bottom_z": 0,
+            "top_z": 10
+        },
+        {
+            "ulpin_3d": "CHILD",
+            "parent": "PARENT",
+            "bottom_z": 2,
+            "top_z": 15
+        }
+    ]
+
+    findings = check_parent_vertical_containment(parcels)
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "PARENT_VERTICAL_CONTAINMENT"
+
+
+#16
+def test_open_footprint():
+
+    parcels = [
+        {
+            "ulpin_3d": "TEST-005",
+            "footprint": [
+                [0, 0],
+                [10, 0],
+                [10, 10],
+                [0, 10]
+            ]
+        }
+    ]
+
+    findings = check_footprint_structure(parcels)
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "FOOTPRINT_STRUCTURE"
+
+def test_valid_footprint():
+
+    parcels = [
+        {
+            "ulpin_3d": "TEST-006",
+            "footprint": [
+                [0, 0],
+                [10, 0],
+                [10, 10],
+                [0, 10],
+                [0, 0]
+            ]
+        }
+    ]
+
+    findings = check_footprint_structure(parcels)
+
+    assert len(findings) == 0
+
+
+
+#17
+def test_duplicate_geometry():
+
+    footprint = [
+        [0, 0],
+        [10, 0],
+        [10, 10],
+        [0, 10],
+        [0, 0]
+    ]
+
+    parcels = [
+        {
+            "ulpin_3d": "A",
+            "footprint": footprint,
+            "bottom_z": 0,
+            "top_z": 3
+        },
+        {
+            "ulpin_3d": "B",
+            "footprint": footprint,
+            "bottom_z": 1,
+            "top_z": 4
+        }
+    ]
+
+    findings = check_duplicate_geometry(parcels)
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "DUPLICATE_GEOMETRY"
+
+def test_same_footprint_different_levels():
+
+    footprint = [
+        [0, 0],
+        [10, 0],
+        [10, 10],
+        [0, 10],
+        [0, 0]
+    ]
+
+    parcels = [
+        {
+            "ulpin_3d": "A",
+            "footprint": footprint,
+            "bottom_z": 0,
+            "top_z": 3
+        },
+        {
+            "ulpin_3d": "B",
+            "footprint": footprint,
+            "bottom_z": 3.2,
+            "top_z": 6
+        }
+    ]
+
+    findings = check_duplicate_geometry(parcels)
+
+    assert len(findings) == 0
+
+
+
+
+#18
+def test_level_vertical_order_invalid():
+
+    parcels = [
+        {
+            "ulpin_3d": "L0",
+            "level": 0,
+            "bottom_z": 0,
+            "top_z": 5
+        },
+        {
+            "ulpin_3d": "L1",
+            "level": 1,
+            "bottom_z": 3,
+            "top_z": 8
+        }
+    ]
+
+    findings = check_level_vertical_order(parcels)
+
+    assert len(findings) == 1
+    assert findings[0]["rule"] == "LEVEL_VERTICAL_ORDER"
+
+def test_level_vertical_order_valid():
+
+    parcels = [
+        {
+            "ulpin_3d": "L0",
+            "level": 0,
+            "bottom_z": 0,
+            "top_z": 3
+        },
+        {
+            "ulpin_3d": "L1",
+            "level": 1,
+            "bottom_z": 3.2,
+            "top_z": 6
+        }
+    ]
+
+    findings = check_level_vertical_order(parcels)
+
+    assert len(findings) == 0
+
+
+
+
+
+
 

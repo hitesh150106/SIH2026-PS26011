@@ -1,12 +1,8 @@
 import json
 import sys
+from pathlib import Path
 
-from Validation.validation import (
-    load_dataset,
-    validate_dataset,
-)
-
-from Validation.rules import (
+from .rules import (
     check_unique_ulpins,
     check_geometry,
     check_elevation,
@@ -17,8 +13,36 @@ from Validation.rules import (
     check_required_fields,
     check_vertical_extent,
     check_within_parent,
-    check_level_sequence
+    check_level_sequence,
+    check_coordinate_structure,
+    check_space_type,
+    check_level_z_consistency,
+    check_parent_vertical_containment,
+    check_footprint_structure,
+    check_duplicate_geometry,
+    check_level_vertical_order
 )
+
+RULES = [
+    check_unique_ulpins,
+    check_geometry,
+    check_elevation,
+    check_area,
+    check_volume,
+    check_parent_exists,
+    check_no_volume_overlap,
+    check_required_fields,
+    check_vertical_extent,
+    check_within_parent,
+    check_level_sequence,
+    check_coordinate_structure,
+    check_space_type,
+    check_level_z_consistency,
+    check_parent_vertical_containment,
+    check_footprint_structure,
+    check_duplicate_geometry,
+    check_level_vertical_order
+]
 
 
 def load_dataset(file_path):
@@ -34,17 +58,8 @@ def validate_dataset(data):
     findings = []
 
     # Run validation rules
-    findings.extend(check_unique_ulpins(parcels))
-    findings.extend(check_geometry(parcels))
-    findings.extend(check_elevation(parcels))
-    findings.extend(check_area(parcels))
-    findings.extend(check_volume(parcels))
-    findings.extend(check_parent_exists(parcels))    
-    findings.extend(check_no_volume_overlap(parcels))
-    findings.extend(check_required_fields(parcels))
-    findings.extend(check_vertical_extent(parcels))  
-    findings.extend(check_within_parent(parcels))
-    findings.extend(check_level_sequence(parcels))
+    for rule in RULES:
+        findings.extend(rule(parcels))
 
     errors = [
         f for f in findings
@@ -130,3 +145,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+    
