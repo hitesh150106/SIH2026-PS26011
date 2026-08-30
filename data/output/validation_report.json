@@ -1,59 +1,200 @@
 {
-  "clean": true,
+  "clean": false,
   "summary": {
     "parcels_checked": 243,
-    "errors": 0,
-    "warnings": 6,
+    "errors": 14,
+    "warnings": 1,
     "info": 0
+  },
+  "performance": {
+    "validation_time_ms": 294.84
+  },
+  "rule_summary": {
+    "UNIQUE_ULPIN": {
+      "errors": 1,
+      "warnings": 0,
+      "info": 0
+    },
+    "NO_VOLUME_OVERLAP": {
+      "errors": 11,
+      "warnings": 0,
+      "info": 0
+    },
+    "WITHIN_PARENT": {
+      "errors": 2,
+      "warnings": 0,
+      "info": 0
+    },
+    "LEVEL_Z_CONSISTENCY": {
+      "errors": 0,
+      "warnings": 1,
+      "info": 0
+    }
   },
   "findings": [
     {
-      "rule": "LEVEL_SEQUENCE",
-      "severity": "warning",
-      "message": "Missing level in sequence: -8",
-      "subjects": [],
-      "metric": -8,
+      "rule": "UNIQUE_ULPIN",
+      "severity": "error",
+      "message": "Duplicate ULPIN detected: DL07TTNF9JN9P4-A-A00-0001-V",
+      "subjects": [
+        "DL07TTNF9JN9P4-A-A00-0001-V",
+        "DL07TTNF9JN9P4-A-A00-0001-V"
+      ],
+      "metric": null,
       "unit": null
     },
     {
-      "rule": "LEVEL_SEQUENCE",
-      "severity": "warning",
-      "message": "Missing level in sequence: -7",
-      "subjects": [],
-      "metric": -7,
+      "rule": "NO_VOLUME_OVERLAP",
+      "severity": "error",
+      "message": "3D volume overlap detected. XY overlap=59.78 m\u00b2, Z overlap=2.90 m.",
+      "subjects": [
+        "DL07TTNF9JN9P4-A-A00-0001-V",
+        "DL07TTNF9JN9P4-A-A00-0001-V"
+      ],
+      "metric": 2.9,
+      "unit": "m"
+    },
+    {
+      "rule": "NO_VOLUME_OVERLAP",
+      "severity": "error",
+      "message": "3D volume overlap detected. XY overlap=0.02 m\u00b2, Z overlap=2.90 m.",
+      "subjects": [
+        "DL07TTNF9JN9P4-A-A01-0005-L",
+        "DL07TTNF9JN9P4-A-A01-002J-Q"
+      ],
+      "metric": 2.8999999999999995,
+      "unit": "m"
+    },
+    {
+      "rule": "NO_VOLUME_OVERLAP",
+      "severity": "error",
+      "message": "3D volume overlap detected. XY overlap=59.78 m\u00b2, Z overlap=2.90 m.",
+      "subjects": [
+        "DL07TTNF9JN9P4-A-A02-0001-R",
+        "DL07TTNF9JN9P4-A-A02-002I-Q"
+      ],
+      "metric": 2.9000000000000004,
+      "unit": "m"
+    },
+    {
+      "rule": "NO_VOLUME_OVERLAP",
+      "severity": "error",
+      "message": "3D volume overlap detected. XY overlap=64.19 m\u00b2, Z overlap=2.90 m.",
+      "subjects": [
+        "DL07TTNF9JN9P4-A-A02-0002-P",
+        "DL07TTNF9JN9P4-A-A02-002I-Q"
+      ],
+      "metric": 2.9000000000000004,
+      "unit": "m"
+    },
+    {
+      "rule": "NO_VOLUME_OVERLAP",
+      "severity": "error",
+      "message": "3D volume overlap detected. XY overlap=1.06 m\u00b2, Z overlap=2.90 m.",
+      "subjects": [
+        "DL07TTNF9JN9P4-A-A02-0003-N",
+        "DL07TTNF9JN9P4-A-A02-002I-Q"
+      ],
+      "metric": 2.9000000000000004,
+      "unit": "m"
+    },
+    {
+      "rule": "NO_VOLUME_OVERLAP",
+      "severity": "error",
+      "message": "3D volume overlap detected. XY overlap=9.85 m\u00b2, Z overlap=2.90 m.",
+      "subjects": [
+        "DL07TTNF9JN9P4-A-A02-0005-J",
+        "DL07TTNF9JN9P4-A-A02-002I-Q"
+      ],
+      "metric": 2.9000000000000004,
+      "unit": "m"
+    },
+    {
+      "rule": "NO_VOLUME_OVERLAP",
+      "severity": "error",
+      "message": "3D volume overlap detected. XY overlap=34.13 m\u00b2, Z overlap=2.90 m.",
+      "subjects": [
+        "DL07TTNF9JN9P4-A-A02-0006-H",
+        "DL07TTNF9JN9P4-A-A02-002I-Q"
+      ],
+      "metric": 2.9000000000000004,
+      "unit": "m"
+    },
+    {
+      "rule": "NO_VOLUME_OVERLAP",
+      "severity": "error",
+      "message": "3D volume overlap detected. XY overlap=50.89 m\u00b2, Z overlap=2.90 m.",
+      "subjects": [
+        "DL07TTNF9HYXST-G-A00-0000-Q",
+        "DL07TTNF9JN9P4-A-A02-002I-Q"
+      ],
+      "metric": 2.9000000000000004,
+      "unit": "m"
+    },
+    {
+      "rule": "NO_VOLUME_OVERLAP",
+      "severity": "error",
+      "message": "3D volume overlap detected. XY overlap=23.45 m\u00b2, Z overlap=2.90 m.",
+      "subjects": [
+        "DL07TTNF9HYXST-A-A02-0003-M",
+        "DL07TTNF9JN9P4-A-A02-002I-Q"
+      ],
+      "metric": 2.9000000000000004,
+      "unit": "m"
+    },
+    {
+      "rule": "NO_VOLUME_OVERLAP",
+      "severity": "error",
+      "message": "3D volume overlap detected. XY overlap=27.44 m\u00b2, Z overlap=2.90 m.",
+      "subjects": [
+        "DL07TTNF9HYXST-A-A02-0004-K",
+        "DL07TTNF9JN9P4-A-A02-002I-Q"
+      ],
+      "metric": 2.9000000000000004,
+      "unit": "m"
+    },
+    {
+      "rule": "NO_VOLUME_OVERLAP",
+      "severity": "error",
+      "message": "3D volume overlap detected. XY overlap=20.00 m\u00b2, Z overlap=2.10 m.",
+      "subjects": [
+        "DL07TTNF9JN9P4-B-B03-0001-M",
+        "DL07TTNF9JN9P4-A-A01-002J-Q"
+      ],
+      "metric": 2.0999999999999996,
+      "unit": "m"
+    },
+    {
+      "rule": "WITHIN_PARENT",
+      "severity": "error",
+      "message": "Parcel DL07TTNF9JN9P4-A-A02-002I-Q extends outside its parent parcel DL07TTNF9JN9P4-G-A00-0000-R. Outside area=110.5175 m\u00b2.",
+      "subjects": [
+        "DL07TTNF9JN9P4-A-A02-002I-Q",
+        "DL07TTNF9JN9P4-G-A00-0000-R"
+      ],
+      "metric": null,
       "unit": null
     },
     {
-      "rule": "LEVEL_SEQUENCE",
-      "severity": "warning",
-      "message": "Missing level in sequence: -6",
-      "subjects": [],
-      "metric": -6,
+      "rule": "WITHIN_PARENT",
+      "severity": "error",
+      "message": "Parcel DL07TTNF9JN9P4-A-A01-002J-Q extends outside its parent parcel DL07TTNF9JN9P4-G-A00-0000-R. Outside area=69.9759 m\u00b2.",
+      "subjects": [
+        "DL07TTNF9JN9P4-A-A01-002J-Q",
+        "DL07TTNF9JN9P4-G-A00-0000-R"
+      ],
+      "metric": null,
       "unit": null
     },
     {
-      "rule": "LEVEL_SEQUENCE",
+      "rule": "LEVEL_Z_CONSISTENCY",
       "severity": "warning",
-      "message": "Missing level in sequence: -5",
-      "subjects": [],
-      "metric": -5,
-      "unit": null
-    },
-    {
-      "rule": "LEVEL_SEQUENCE",
-      "severity": "warning",
-      "message": "Missing level in sequence: -4",
-      "subjects": [],
-      "metric": -4,
-      "unit": null
-    },
-    {
-      "rule": "LEVEL_SEQUENCE",
-      "severity": "warning",
-      "message": "Missing level in sequence: -3",
-      "subjects": [],
-      "metric": -3,
-      "unit": null
+      "message": "Level -3 suggests bottom_z around -9.60 m, but actual bottom_z=4.00 m.",
+      "subjects": [
+        "DL07TTNF9JN9P4-B-B03-0001-M"
+      ],
+      "metric": 13.600000000000001,
+      "unit": "m"
     }
   ]
 }

@@ -3,6 +3,7 @@ import json
 from Validation.validation import (
     load_dataset,
     validate_dataset,
+    build_rule_summary,
 )
 
 from Validation.rules import (
@@ -24,6 +25,138 @@ from Validation.rules import (
     check_duplicate_geometry,
     check_level_vertical_order
 )
+
+def test_validation_contains_rule_summary():
+
+    data = {
+        "parcels": []
+    }
+
+    report = validate_dataset(data)
+
+    assert "rule_summary" in report
+    assert isinstance(report["rule_summary"], dict)
+    
+
+def test_build_rule_summary():
+
+    findings = [
+        {
+            "rule": "TEST_RULE",
+            "severity": "error"
+        },
+        {
+            "rule": "TEST_RULE",
+            "severity": "warning"
+        },
+        {
+            "rule": "TEST_RULE",
+            "severity": "error"
+        },
+        {
+            "rule": "OTHER_RULE",
+            "severity": "info"
+        }
+    ]
+
+    summary = build_rule_summary(findings)
+
+    assert summary["TEST_RULE"]["errors"] == 2
+    assert summary["TEST_RULE"]["warnings"] == 1
+    assert summary["TEST_RULE"]["info"] == 0
+
+    assert summary["OTHER_RULE"]["errors"] == 0
+    assert summary["OTHER_RULE"]["warnings"] == 0
+    assert summary["OTHER_RULE"]["info"] == 1
+
+
+def test_validation_contains_performance():
+
+    data = load_dataset(
+        "data/samples/dwarka_sector12_clean.json"
+    )
+
+    report = validate_dataset(data)
+
+    assert "performance" in report
+    assert "validation_time_ms" in report["performance"]
+
+    assert isinstance(
+        report["performance"]["validation_time_ms"],
+        (int, float)
+    )
+
+    assert report["performance"]["validation_time_ms"] >= 0
+
+def test_validation_performance_is_not_in_summary():
+
+    data = load_dataset(
+        "data/samples/dwarka_sector12_clean.json"
+    )
+
+    report = validate_dataset(data)
+
+    assert "performance" not in report["summary"]
+    assert "performance" in report
+
+
+    
+def test_conflict_dataset_expected_summary():
+
+    data = load_dataset(
+        "data/samples/dwarka_sector12_conflicts.json"
+    )
+
+    report = validate_dataset(data)
+
+    assert report["summary"]["parcels_checked"] == 243
+    assert report["summary"]["errors"] == 14
+    assert report["summary"]["warnings"] == 1
+
+    assert (
+        report["rule_summary"]["NO_VOLUME_OVERLAP"]["errors"]
+        == 11
+    )
+
+    assert (
+        report["rule_summary"]["WITHIN_PARENT"]["errors"]
+        == 2
+    )
+
+    assert (
+        report["rule_summary"]["UNIQUE_ULPIN"]["errors"]
+        == 1
+    )
+
+    assert (
+        report["rule_summary"]["LEVEL_Z_CONSISTENCY"]["warnings"]
+        == 1
+    )
+
+
+def test_duplicate_ulpin_is_detected():
+
+    data = load_dataset(
+        "data/samples/dwarka_sector12_conflicts.json"
+    )
+
+    report = validate_dataset(data)
+
+    duplicate_findings = [
+        f
+        for f in report["findings"]
+        if f["rule"] == "UNIQUE_ULPIN"
+    ]
+
+    assert len(duplicate_findings) == 1
+
+    assert (
+        "DL07TTNF9JN9P4-A-A00-0001-V"
+        in duplicate_findings[0]["subjects"]
+    )
+
+
+
 
 def test_clean_dwarka():
 
@@ -580,6 +713,41 @@ def test_same_footprint_different_levels():
 
     assert len(findings) == 0
 
+def test_ground_roof_same_footprint_allowed():
+
+    footprint = [
+        [0, 0],
+        [10, 0],
+        [10, 10],
+        [0, 10],
+        [0, 0]
+    ]
+
+    parcels = [
+        {
+            "ulpin_3d": "BUILDING-G",
+            "base_ulpin": "BUILDING",
+            "space_type": "G",
+            "level": 0,
+            "footprint": footprint,
+            "bottom_z": -12,
+            "top_z": 19.2
+        },
+        {
+            "ulpin_3d": "BUILDING-R",
+            "base_ulpin": "BUILDING",
+            "space_type": "R",
+            "level": 5,
+            "footprint": footprint,
+            "bottom_z": 16,
+            "top_z": 19.2
+        }
+    ]
+
+    findings = check_duplicate_geometry(parcels)
+
+    assert findings == []
+
 
 
 
@@ -590,12 +758,14 @@ def test_level_vertical_order_invalid():
         {
             "ulpin_3d": "L0",
             "level": 0,
+            "space_type": "A",
             "bottom_z": 0,
             "top_z": 5
         },
         {
             "ulpin_3d": "L1",
             "level": 1,
+            "space_type": "A",
             "bottom_z": 3,
             "top_z": 8
         }
@@ -612,12 +782,14 @@ def test_level_vertical_order_valid():
         {
             "ulpin_3d": "L0",
             "level": 0,
+            "space_type": "A",
             "bottom_z": 0,
             "top_z": 3
         },
         {
             "ulpin_3d": "L1",
             "level": 1,
+            "space_type": "A",
             "bottom_z": 3.2,
             "top_z": 6
         }
@@ -626,10 +798,5 @@ def test_level_vertical_order_valid():
     findings = check_level_vertical_order(parcels)
 
     assert len(findings) == 0
-
-
-
-
-
 
 

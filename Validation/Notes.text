@@ -26,12 +26,13 @@ TEST STATUS :
 10. WITHIN PARENT                        -     Done
 11. LEVEL SEQUENCE                       -     Done
 12. CHECK COORDINATE                     -     Done
-13. SPACE_TYPE_VALIDATION
-14. LEVEL_Z_CONSISTENCY
-15. PARENT_VERTICAL_CONTAINMENT
-16. FOOTPRINT_STRUCTURE
-17. DUPLICATE_GEOMETRY
-18. LEVEL_VERTICAL_ORDER
+13. SPACE_TYPE_VALIDATION                -     Done
+14. LEVEL_Z_CONSISTENCY                  -     Done
+15. PARENT_VERTICAL_CONTAINMENT          -     Done
+16. FOOTPRINT_STRUCTURE                  -     Done
+17. DUPLICATE_GEOMETRY                   -     Done
+18. LEVEL_VERTICAL_ORDER                 -     Done
+
 19. Parent-child type compatibility
 20. Circular parent detection
 21. Self-intersection / invalid geometry details

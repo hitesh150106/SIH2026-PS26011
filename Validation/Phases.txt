@@ -1,0 +1,24 @@
+Phase 1 -
+18 Rules + 34 Test cases testing
+
+
+Phase 2 -
+Improved output results and report generation
+
+
+Phase 3 -
+Improving Scalability & performance by :
+   -> sptial indexing 
+   -> some functions have TC : O(n^2) , very slow for large data
+   -> performance before phase 3 : 
+        Days              : 0
+        Hours             : 0
+        Minutes           : 0
+        Seconds           : 0
+        Milliseconds      : 620
+        Ticks             : 6206427
+        TotalDays         : 7.18336458333333E-06
+        TotalHours        : 0.00017240075
+        TotalMinutes      : 0.010344045
+        TotalSeconds      : 0.6206427
+        TotalMilliseconds : 620.6427

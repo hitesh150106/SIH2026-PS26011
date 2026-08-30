@@ -1,4 +1,5 @@
 from shapely.geometry import Polygon
+from shapely.strtree import STRtree
 
 def finding(rule, severity, message, subjects=None, metric=None, unit=None):
     return {
@@ -366,51 +367,72 @@ def check_no_volume_overlap(parcels):
 
     findings = []
 
-    polygons = {}
-
     parcel_map = {
         parcel.get("ulpin_3d"): parcel
         for parcel in parcels
         if parcel.get("ulpin_3d")
     }
 
-    # Build polygons
+    # ---------------------------------------------------------
+    # Build polygon list while preserving duplicate ULPINs
+    # ---------------------------------------------------------
+
+    valid_parcels = []
+    polygon_list = []
+
     for parcel in parcels:
 
         ulpin = parcel.get("ulpin_3d")
         ring = parcel.get("footprint")
 
-        if not ring:
+        if not ulpin or not ring:
             continue
 
         try:
-            polygons[ulpin] = Polygon(ring)
+            polygon = Polygon(ring)
         except Exception:
             continue
 
-    # Pairwise comparison
-    for i in range(len(parcels)):
+        valid_parcels.append(parcel)
+        polygon_list.append(polygon)
 
-        a = parcels[i]
+    if not polygon_list:
+        return findings
+
+    # ---------------------------------------------------------
+    # Build spatial index
+    # ---------------------------------------------------------
+
+    tree = STRtree(polygon_list)
+
+    # ---------------------------------------------------------
+    # Spatial candidate search
+    # ---------------------------------------------------------
+
+    for index_a, poly_a in enumerate(polygon_list):
+
+        a = valid_parcels[index_a]
+
         ulpin_a = a.get("ulpin_3d")
 
-        if ulpin_a not in polygons:
-            continue
+        # Query spatially possible candidates.
+        candidate_indices = tree.query(poly_a)
 
-        poly_a = polygons[ulpin_a]
+        for candidate_index in candidate_indices:
 
-        for j in range(i + 1, len(parcels)):
+            candidate_index = int(candidate_index)
 
-            b = parcels[j]
-            ulpin_b = b.get("ulpin_3d")
-
-            if ulpin_b not in polygons:
+            # Avoid self-comparison and duplicate pair checking.
+            if candidate_index <= index_a:
                 continue
 
+            b = valid_parcels[candidate_index]
+
+            ulpin_b = b.get("ulpin_3d")
+
             # -------------------------------------------------
-            # IMPORTANT:
             # Parent-child / ancestor-descendant overlap
-            # is VALID in a hierarchical 3D cadastral model.
+            # is valid.
             # -------------------------------------------------
 
             if _is_ancestor(
@@ -420,9 +442,12 @@ def check_no_volume_overlap(parcels):
             ):
                 continue
 
-            poly_b = polygons[ulpin_b]
+            poly_b = polygon_list[candidate_index]
 
-            # First: 2D overlap
+            # -------------------------------------------------
+            # 2D overlap
+            # -------------------------------------------------
+
             if not poly_a.intersects(poly_b):
                 continue
 
@@ -430,9 +455,13 @@ def check_no_volume_overlap(parcels):
                 poly_b
             ).area
 
-            # Shared boundary / touching polygons are allowed
+            # Shared boundary / touching polygons are allowed.
             if intersection_area <= 0.001:
                 continue
+
+            # -------------------------------------------------
+            # Vertical overlap
+            # -------------------------------------------------
 
             bottom_a = a.get("bottom_z")
             top_a = a.get("top_z")
@@ -448,7 +477,6 @@ def check_no_volume_overlap(parcels):
             ):
                 continue
 
-            # Second: vertical overlap
             overlap_bottom = max(
                 bottom_a,
                 bottom_b
@@ -461,65 +489,46 @@ def check_no_volume_overlap(parcels):
 
             z_overlap = overlap_top - overlap_bottom
 
-            if z_overlap > 0.01:
+            if z_overlap <= 0.01:
+                continue
 
-                # -------------------------------------------------
-                # Legitimate vertical cadastral relationships
-                # -------------------------------------------------
+            # -------------------------------------------------
+            # Legitimate vertical cadastral relationships
+            # -------------------------------------------------
 
-                type_a = a.get("space_type")
-                type_b = b.get("space_type")
+            type_a = a.get("space_type")
+            type_b = b.get("space_type")
 
-                allowed_pair = {type_a, type_b}
+            allowed_pair = {
+                type_a,
+                type_b
+            }
 
-                if allowed_pair in (
-                    {"G", "R"},
-                    {"G", "U"},
-                    {"G", "T"},
-                ):
-                    continue
+            if allowed_pair in (
+                {"G", "R"},
+                {"G", "U"},
+                {"G", "T"},
+            ):
+                continue
 
-                print("\n================ OVERLAP DEBUG ================")
+            # -------------------------------------------------
+            # Conflict
+            # -------------------------------------------------
 
-                print(
-                    "A:",
-                    ulpin_a,
-                    "| type:", a.get("space_type"),
-                    "| level:", a.get("level"),
-                    "| Z:", a.get("bottom_z"), "to", a.get("top_z"),
-                    "| parent:", a.get("parent")
+            findings.append(
+                finding(
+                    "NO_VOLUME_OVERLAP",
+                    "error",
+                    (
+                        f"3D volume overlap detected. "
+                        f"XY overlap={intersection_area:.2f} m², "
+                        f"Z overlap={z_overlap:.2f} m."
+                    ),
+                    [ulpin_a, ulpin_b],
+                    z_overlap,
+                    "m"
                 )
-
-                print(
-                    "B:",
-                    ulpin_b,
-                    "| type:", b.get("space_type"),
-                    "| level:", b.get("level"),
-                    "| Z:", b.get("bottom_z"), "to", b.get("top_z"),
-                    "| parent:", b.get("parent")
-                )
-
-                print("XY overlap:", round(intersection_area, 2))
-                print("Z overlap:", round(z_overlap, 2))
-                print(
-                    "A ancestor B:",
-                    _is_ancestor(ulpin_a, ulpin_b, parcel_map)
-                )
-
-                findings.append(
-                    finding(
-                        "NO_VOLUME_OVERLAP",
-                        "error",
-                        (
-                            f"3D volume overlap detected. "
-                            f"XY overlap={intersection_area:.2f} m², "
-                            f"Z overlap={z_overlap:.2f} m."
-                        ),
-                        [ulpin_a, ulpin_b],
-                        z_overlap,
-                        "m"
-                    )
-                )
+            )
 
     return findings
 
@@ -697,12 +706,24 @@ def check_level_sequence(parcels):
 
     unique_levels = sorted(set(levels))
 
+    # Underground levels may be sparse because they can
+    # represent different underground structures/depths.
+    # Therefore, do not assume every negative level must exist.
+
+    non_negative_levels = [
+        level for level in unique_levels
+        if level >= 0
+    ]
+
+    if len(non_negative_levels) < 2:
+        return findings
+
     for expected_level in range(
-        unique_levels[0],
-        unique_levels[-1] + 1
+        non_negative_levels[0],
+        non_negative_levels[-1] + 1
     ):
 
-        if expected_level not in unique_levels:
+        if expected_level not in non_negative_levels:
 
             findings.append(
                 finding(
@@ -837,18 +858,33 @@ def check_level_z_consistency(
 
     findings = []
 
+    # Space types where level * floor_height
+    # is not a reliable direct representation
+    excluded_types = {
+        "G",   # Ground/general parcel
+        "U",   # Underground infrastructure
+        "T",   # Tunnel/transport
+    }
+
     for parcel in parcels:
 
         ulpin = parcel.get("ulpin_3d")
         level = parcel.get("level")
         bottom_z = parcel.get("bottom_z")
+        space_type = parcel.get("space_type")
 
-        if level is None or bottom_z is None:
+        if (
+            level is None
+            or bottom_z is None
+            or space_type in excluded_types
+        ):
             continue
 
         expected_bottom = level * floor_height
 
-        difference = abs(bottom_z - expected_bottom)
+        difference = abs(
+            bottom_z - expected_bottom
+        )
 
         if difference > tolerance:
 
@@ -868,7 +904,6 @@ def check_level_z_consistency(
             )
 
     return findings
-
 
 
 
@@ -1055,6 +1090,14 @@ def check_duplicate_geometry(parcels):
             if not poly_a.equals(poly_b):
                 continue
 
+            type_a = a.get("space_type")
+            type_b = b.get("space_type")
+
+            # Different cadastral space types can legitimately
+            # share the same footprint and overlap vertically.
+            if type_a != type_b:
+                continue
+
             bottom_a = a.get("bottom_z")
             top_a = a.get("top_z")
 
@@ -1103,6 +1146,13 @@ def check_level_vertical_order(parcels, tolerance=0.10):
 
     findings = []
 
+    # Only these represent actual floor/unit spaces
+    comparable_types = {
+        "A",   # Apartment / unit
+        "P",   # Parking
+        "B"    # Basement
+    }
+
     level_ranges = {}
 
     for parcel in parcels:
@@ -1110,11 +1160,13 @@ def check_level_vertical_order(parcels, tolerance=0.10):
         level = parcel.get("level")
         bottom = parcel.get("bottom_z")
         top = parcel.get("top_z")
+        space_type = parcel.get("space_type")
 
         if (
             not isinstance(level, int)
             or bottom is None
             or top is None
+            or space_type not in comparable_types
         ):
             continue
 
@@ -1132,7 +1184,7 @@ def check_level_vertical_order(parcels, tolerance=0.10):
         lower_level = levels[i]
         upper_level = levels[i + 1]
 
-        # Only compare adjacent levels
+        # Only compare consecutive levels
         if upper_level != lower_level + 1:
             continue
 
@@ -1165,7 +1217,6 @@ def check_level_vertical_order(parcels, tolerance=0.10):
             )
 
     return findings
-
 
 
 
