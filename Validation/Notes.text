@@ -10,6 +10,14 @@ Rules :
 9.  VERTICAL VALIDATION
 10. WITHIN PARENT
 11. LEVEL SEQUENCE
+12. CHECK COORDINATE                    
+13. SPACE_TYPE_VALIDATION                
+14. LEVEL_Z_CONSISTENCY                  
+15. PARENT_VERTICAL_CONTAINMENT         
+16. FOOTPRINT_STRUCTURE                
+17. DUPLICATE_GEOMETRY                
+18. LEVEL_VERTICAL_ORDER          
+
 
 
 
@@ -38,6 +46,9 @@ TEST STATUS :
 21. Self-intersection / invalid geometry details
 22. Unrealistic height
 23. Area/height/volume consistency improvements
+
+
+
 
 INFO :
 G = surface parcel

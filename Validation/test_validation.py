@@ -70,6 +70,7 @@ def test_build_rule_summary():
     assert summary["OTHER_RULE"]["info"] == 1
 
 
+
 def test_validation_contains_performance():
 
     data = load_dataset(
@@ -98,6 +99,7 @@ def test_validation_performance_is_not_in_summary():
 
     assert "performance" not in report["summary"]
     assert "performance" in report
+
 
 
     
@@ -132,6 +134,9 @@ def test_conflict_dataset_expected_summary():
         report["rule_summary"]["LEVEL_Z_CONSISTENCY"]["warnings"]
         == 1
     )
+
+
+
 
 
 def test_duplicate_ulpin_is_detected():
@@ -179,6 +184,7 @@ def test_conflict_dwarka():
     assert report["clean"] is False
 
     assert report["summary"]["errors"] > 0
+
 
 
 
